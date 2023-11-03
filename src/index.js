@@ -10,7 +10,7 @@ export default void function(){
         step: 1,
         value: 1,
     }
-    const GUI = new HUD({container: document.body, relativeWidth: 30, position: 'right'})
+    const GUI = new HUD({container: document.body, relativeWidth: 20, position: 'right'})
     const slider = GUI.addSection('slider'/*, false@default */);
     /* === slider */
     const rangeController = GUI.addController(
@@ -52,9 +52,12 @@ export default void function(){
                         strokeWidth: 2,
                     })
 
+                    ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ), Konva〵Node〵Defaults.x(),  Konva〵Node〵Defaults.y())
+                    ctx.rect(shape.x(), shape.y(), shape.width(), shape.height())
+                    ctx.fillStrokeShape(shape)
+
                     GUI.find(rangeController.getRef).on('input', function(){
 
-                        ctx.clear()
                         ctx.setTransform(...matrixRotate( DegToRad( parseInt( this.value ) ) ), Konva〵Node〵Defaults.x(),  Konva〵Node〵Defaults.y())
                         ctx.rect(shape.x(), shape.y(), shape.width(), shape.height())
                         ctx.fillStrokeShape(shape)
