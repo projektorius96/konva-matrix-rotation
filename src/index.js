@@ -5,7 +5,7 @@ import { HUD, Input } from '@declarative-hud/index.js'
 export default void function(){
 
     const rangeParams = {
-        min: 1,
+        min: 0,
         max:  360,
         step: 1,
         value: 1,
@@ -66,7 +66,7 @@ export default void function(){
                         /* ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ),shape.x(), shape.y()) */// or do even better, to avoid artifacts...
                         ctx.reset()
                         ctx.clearRect(shape.x(), shape.y(), shape.getLayer().width(), shape.getLayer().height())
-                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( -1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
                         ctx.fillStyle = shape.fill()
                         ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
                         /* ctx.fillStrokeShape(shape) */
