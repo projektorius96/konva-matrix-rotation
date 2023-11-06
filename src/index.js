@@ -1,7 +1,7 @@
 import { Stage, Layer, Node, Shape } from './konva-components/index.js';
 import { DegToRad } from './utils/constants.js';
 import { matrixRotate } from './callbacks/rotate.js';
-import { HUD, Input } from '@declarative-hud/index.js'
+import { HUD, Input, Label } from '@declarative-hud/index.js'
 export default void function(){
 
     const rangeParams = {
@@ -10,23 +10,19 @@ export default void function(){
         step: 1,
         value: 1,
     }
-    const GUI = new HUD({container: document.body, relativeWidth: 20, position: 'right'})
-    const slider = GUI.addSection('slider'/*, false@default */);
-    /* === slider */
-    const rangeController = GUI.addController({
-            label: '0to360', 
-            view: new Input({
-                    type: 'range', 
-                    attrs: {...rangeParams}
-            }), 
-            section: slider.getRef
-        });
-    const checkbox1 = new Input({ name:  'isChecked', type: 'checkbox', attrs: {/* cboxScaling: null *//* initCheckRequired: false */}})
-            GUI.addController({
-                label: 'clockwise?', 
-                view: checkbox1, 
-                section: slider.getRef
-            })
+    const GUI = new HUD({container: document.body, minWidth: 15, position: 'right'})
+    GUI.addGroup({name: 'group1', nodes: GUI.addSection('section', 2/* access each as section1|section2|sectionN : whereas N > 2 */)})
+
+    const rangeInput = new Input({name: 'range', attrs: {...rangeParams}})
+    GUI.find('section1').append(
+        rangeInput
+    );
+    const cboxInput = new Input({name: 'cbox1', type: 'checkbox'/* , attrs: {cboxScaling: 1.5} */})
+    GUI.find('section2'/* tick1 */).append(
+        new Label('clockwise?'),
+        cboxInput
+    );
+    
     const 
         Konva〵Node〵Defaults = new Node({
             container: document.getElementById('app'),
@@ -60,17 +56,17 @@ export default void function(){
                         ctx.fillStyle = shape.fill()
                         ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
                     /* ctx.fillStrokeShape(shape) */
-                    GUI.find(rangeController.getRef).on('input', function(){
+                    GUI.find(rangeInput.name).on('input', function(){
                         
                         /* ctx.resetTransform() *//* cannot call this, instead reset the tranform in the following way: */
                         /* ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ),shape.x(), shape.y()) */// or do even better, to avoid artifacts...
                         ctx.reset()
                         ctx.clearRect(shape.x(), shape.y(), shape.getLayer().width(), shape.getLayer().height())
                         
-                        if (GUI.find(checkbox1.name).checked){
+                        if (GUI.find(cboxInput.name).checked){
                             ctx.setTransform(...matrixRotate( DegToRad( parseInt( 1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
                         }
-                        else{
+                        else {
                             ctx.setTransform(...matrixRotate( DegToRad( parseInt( -1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
                         }
 
