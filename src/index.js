@@ -48,19 +48,27 @@ export default void function(){
                         y: 0,
                         width: 200,
                         height: 200,
+                        fill: 'green',
                         stroke: 'black',
                         strokeWidth: 2,
                     })
 
-                    ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ), Konva〵Node〵Defaults.x(),  Konva〵Node〵Defaults.y())
-                    ctx.rect(shape.x(), shape.y(), shape.width(), shape.height())
-                    ctx.fillStrokeShape(shape)
+                    /* ctx.rect(shape.x(), shape.y(), shape.width(), shape.height()); */// call so ctx.fillStrokeShape(shape) call would exert an effect upon
+                    ctx.reset()
+                    ctx.fillStyle = shape.fill()
+                    ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
+                    /* ctx.fillStrokeShape(shape) */
 
                     GUI.find(rangeController.getRef).on('input', function(){
 
-                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( this.value ) ) ), Konva〵Node〵Defaults.x(),  Konva〵Node〵Defaults.y())
-                        ctx.rect(shape.x(), shape.y(), shape.width(), shape.height())
-                        ctx.fillStrokeShape(shape)
+                        /* ctx.resetTransform() *//* cannot call this, instead reset the tranform in the following way: */
+                        /* ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ),shape.x(), shape.y()) */// or do even better, to avoid artifacts...
+                        ctx.reset()
+                        ctx.clearRect(shape.x(), shape.y(), shape.getLayer().width(), shape.getLayer().height())
+                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( this.value ) ) ), shape.x(), shape.y())
+                        ctx.fillStyle = shape.fill()
+                        ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
+                        /* ctx.fillStrokeShape(shape) */
 
                     });
                 }})
