@@ -13,19 +13,20 @@ export default void function(){
     const GUI = new HUD({container: document.body, relativeWidth: 20, position: 'right'})
     const slider = GUI.addSection('slider'/*, false@default */);
     /* === slider */
-    const rangeController = GUI.addController(
-        {
+    const rangeController = GUI.addController({
             label: '0to360', 
-            view: new Input(
-                {
+            view: new Input({
                     type: 'range', 
                     attrs: {...rangeParams}
-                }
-            ), 
+            }), 
             section: slider.getRef
-        }
-    );
-
+        });
+    const checkbox1 = new Input({ name:  'isChecked', type: 'checkbox', attrs: {/* cboxScaling: null *//* initCheckRequired: false */}})
+            GUI.addController({
+                label: 'clockwise?', 
+                view: checkbox1, 
+                section: slider.getRef
+            })
     const 
         Konva〵Node〵Defaults = new Node({
             container: document.getElementById('app'),
@@ -59,14 +60,20 @@ export default void function(){
                         ctx.fillStyle = shape.fill()
                         ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
                     /* ctx.fillStrokeShape(shape) */
-
                     GUI.find(rangeController.getRef).on('input', function(){
-
+                        
                         /* ctx.resetTransform() *//* cannot call this, instead reset the tranform in the following way: */
                         /* ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ),shape.x(), shape.y()) */// or do even better, to avoid artifacts...
                         ctx.reset()
                         ctx.clearRect(shape.x(), shape.y(), shape.getLayer().width(), shape.getLayer().height())
-                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( -1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                        
+                        if (GUI.find(checkbox1.name).checked){
+                            ctx.setTransform(...matrixRotate( DegToRad( parseInt( 1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                        }
+                        else{
+                            ctx.setTransform(...matrixRotate( DegToRad( parseInt( -1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                        }
+
                         ctx.fillStyle = shape.fill()
                         ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
                         /* ctx.fillStrokeShape(shape) */
