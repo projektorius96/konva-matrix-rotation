@@ -1,31 +1,28 @@
 import { Stage, Layer, Node, Shape } from './konva-components/index.js';
 import { DegToRad } from './utils/constants.js';
-import { matrixRotate } from './callbacks/rotate.js';
-import { HUD, Input } from '@declarative-hud/index.js'
+import { matrixTransformation } from './callbacks/rotate.js';
+import { HUD, Input, Label } from '@declarative-hud/index.js'
 export default void function(){
 
     const rangeParams = {
-        min: 1,
+        min: 0,
         max:  360,
         step: 1,
         value: 1,
     }
-    const GUI = new HUD({container: document.body, relativeWidth: 20, position: 'right'})
-    const slider = GUI.addSection('slider'/*, false@default */);
-    /* === slider */
-    const rangeController = GUI.addController(
-        {
-            label: '0to360', 
-            view: new Input(
-                {
-                    type: 'range', 
-                    attrs: {...rangeParams}
-                }
-            ), 
-            section: slider.getRef
-        }
-    );
+    const GUI = new HUD({container: document.body, minWidth: 15, position: 'right'})
+    GUI.addGroup({name: 'group1', nodes: GUI.addSection('section', 2/* access each as section1|section2|sectionN : whereas N > 2 */)})
 
+    const rangeInput = new Input({name: 'range', attrs: {...rangeParams}})
+    GUI.find('section1').append(
+        rangeInput
+    );
+    const cboxInput = new Input({name: 'cbox1', type: 'checkbox'/* , attrs: {cboxScaling: 1.5} */})
+    GUI.find('section2'/* tick1 */).append(
+        new Label('clockwise?'),
+        cboxInput
+    );
+    
     const 
         Konva〵Node〵Defaults = new Node({
             container: document.getElementById('app'),
@@ -48,19 +45,41 @@ export default void function(){
                         y: 0,
                         width: 200,
                         height: 200,
+                        fill: 'green',
                         stroke: 'black',
                         strokeWidth: 2,
                     })
 
-                    ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ), Konva〵Node〵Defaults.x(),  Konva〵Node〵Defaults.y())
-                    ctx.rect(shape.x(), shape.y(), shape.width(), shape.height())
-                    ctx.fillStrokeShape(shape)
+                    const attrs = {
+                        scalingFactorX: 2/* <= change a value */, 
+                        scalingFactorY: 2/* <= change a value */,
+                        translateX: 0/* <= change a value */ + Konva〵Node〵Defaults.x(), 
+                        translateY: 0/* <= change a value */ + Konva〵Node〵Defaults.y()
+                    }
 
-                    GUI.find(rangeController.getRef).on('input', function(){
+                    /* ctx.rect(shape.x(), shape.y(), shape.width(), shape.height()); */// call so ctx.fillStrokeShape(shape) call would exert an effect upon
+                        /* ctx.reset() */
+                        ctx.setTransform(...matrixTransformation( DegToRad( parseInt( 0 ) ), attrs ))
+                        ctx.fillStyle = shape.fill()
+                        ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
+                    /* ctx.fillStrokeShape(shape) */
+                    GUI.find(rangeInput.name).on('input', function(){
+                        
+                        /* ctx.resetTransform() *//* cannot call this, instead reset the tranform in the following way: */
+                        /* ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ),shape.x(), shape.y()) */// or do even better, to avoid artifacts...
+                        ctx.reset()
+                        ctx.clearRect(shape.x(), shape.y(), shape.getLayer().width(), shape.getLayer().height())
+                        
+                        if (GUI.find(cboxInput.name).checked){
+                            ctx.setTransform(...matrixTransformation( DegToRad( parseInt( 1 * this.value ) ), attrs ))
+                        }
+                        else {
+                            ctx.setTransform(...matrixTransformation( DegToRad( parseInt( -1 * this.value ) ), attrs ))
+                        }
 
-                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( this.value ) ) ), Konva〵Node〵Defaults.x(),  Konva〵Node〵Defaults.y())
-                        ctx.rect(shape.x(), shape.y(), shape.width(), shape.height())
-                        ctx.fillStrokeShape(shape)
+                        ctx.fillStyle = shape.fill()
+                        ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
+                        /* ctx.fillStrokeShape(shape) */
 
                     });
                 }})

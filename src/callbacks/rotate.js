@@ -1,8 +1,11 @@
-export function matrixRotate(rad){
+export function matrixTransformation(rad, attrs = {
+    scalingFactorX:1, scalingFactorY:1,
+    translateX: 0, translateY: 0
+}){
     
     // @https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations#transforms
-    var c = Math.cos(rad);
-    var s = Math.sin(rad);
+    var c = attrs?.scalingFactorX * Math.cos(rad);
+    var s = attrs?.scalingFactorY * Math.sin(rad);
     
     // Transformation matrix variant
     var m11 = c;
@@ -14,7 +17,9 @@ export function matrixRotate(rad){
         m11,
         m12,
         m21,
-        m22
+        m22,
+        attrs?.translateX,
+        attrs?.translateY
     ]
     
 }

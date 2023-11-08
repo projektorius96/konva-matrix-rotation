@@ -3,7 +3,7 @@ export default defineConfig({
     plugins: [],
     resolve: {
         alias: [
-            {find: '@declarative-hud', replacement: '/../../declarative-hud/src/web-components'}
+            {find: '@declarative-hud', replacement: '/../../declarative-hud/src/views'}
         ]
     }
 })
