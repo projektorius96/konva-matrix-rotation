@@ -1,6 +1,6 @@
 import { Stage, Layer, Node, Shape } from './konva-components/index.js';
 import { DegToRad } from './utils/constants.js';
-import { matrixRotate } from './callbacks/rotate.js';
+import { matrixTransformation } from './callbacks/rotate.js';
 import { HUD, Input, Label } from '@declarative-hud/index.js'
 export default void function(){
 
@@ -50,9 +50,16 @@ export default void function(){
                         strokeWidth: 2,
                     })
 
+                    const attrs = {
+                        scalingFactorX: 2/* <= change a value */, 
+                        scalingFactorY: 2/* <= change a value */,
+                        translateX: 0/* <= change a value */ + Konva〵Node〵Defaults.x(), 
+                        translateY: 0/* <= change a value */ + Konva〵Node〵Defaults.y()
+                    }
+
                     /* ctx.rect(shape.x(), shape.y(), shape.width(), shape.height()); */// call so ctx.fillStrokeShape(shape) call would exert an effect upon
                         /* ctx.reset() */
-                        ctx.setTransform(...matrixRotate( DegToRad( parseInt( 0 ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                        ctx.setTransform(...matrixTransformation( DegToRad( parseInt( 0 ) ), attrs ))
                         ctx.fillStyle = shape.fill()
                         ctx.fillRect(shape.x(), shape.y(), shape.width(), shape.height());
                     /* ctx.fillStrokeShape(shape) */
@@ -64,10 +71,10 @@ export default void function(){
                         ctx.clearRect(shape.x(), shape.y(), shape.getLayer().width(), shape.getLayer().height())
                         
                         if (GUI.find(cboxInput.name).checked){
-                            ctx.setTransform(...matrixRotate( DegToRad( parseInt( 1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                            ctx.setTransform(...matrixTransformation( DegToRad( parseInt( 1 * this.value ) ), attrs ))
                         }
                         else {
-                            ctx.setTransform(...matrixRotate( DegToRad( parseInt( -1*this.value ) ) ), Konva〵Node〵Defaults.x(), Konva〵Node〵Defaults.y())
+                            ctx.setTransform(...matrixTransformation( DegToRad( parseInt( -1 * this.value ) ), attrs ))
                         }
 
                         ctx.fillStyle = shape.fill()
